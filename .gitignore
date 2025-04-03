@@ -1,0 +1,16 @@
+.cloud
+.storage
+backups
+blueprints
+custom_components
+deps
+image
+themes
+tts
+www
+
+home-assistant_v2.*
+home-assistant.*
+
+ip_bans.yaml
+secrets.yaml
