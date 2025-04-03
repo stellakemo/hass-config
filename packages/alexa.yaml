@@ -1,0 +1,17 @@
+alexa:
+  smart_home:
+    locale: ja-JP
+    endpoint: https://api.fe.amazonalexa.com/v3/events
+    client_id: !secret alexa_client_id
+    client_secret: !secret alexa_client_secret
+    filter:
+      include_entities:
+        - sensor.living_room_thermometer_temperature
+        - sensor.bedroom1_thermometer_temperature
+    entity_config:
+      sensor.living_room_thermometer_temperature:
+        name: リビングの温度
+        description: リビングの温度
+      sensor.bedroom1_thermometer_temperature:
+        name: 寝室１の温度
+        description: 寝室１の温度
