@@ -1,0 +1,26 @@
+template:
+  - sensor:
+      - name: cpj1200_load_watts
+        unique_id: c811b5b0-6694-4cb3-aca9-c236b212ae98
+        unit_of_measurement: W
+        state_class: measurement
+        device_class: power
+        ## CPJ120 の公称実電力: 720W
+        ## 消費電力 = 負荷 * 0.01 * 公称実電力
+        state: "{{ states('sensor.cpj1200_load') | float * 0.01 * 720.0 }}"
+
+sensor:
+  - platform: integration
+    source: sensor.cpj1200_load_watts
+    name: cpj1200_energy_spent
+    unique_id: 02668e45-30d0-4f31-a351-6872c9916ffc
+    unit_prefix: k
+    max_sub_interval:
+      minutes: 1
+
+homeassistant:
+  customize:
+    sensor.cpj1200_load_watts:
+      friendly_name: CPJ1200 負荷 (ワット)
+    sensor.cpj1200_energy_spent:
+      friendly_name: CPJ1200 エネルギー消費量
