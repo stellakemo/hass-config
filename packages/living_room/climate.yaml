@@ -1,4 +1,76 @@
+climate:
+  - platform: climate_template
+    name: living_room_ac
+    unique_id: b7701e1e-5e74-4927-812e-68246dde8953
+    icon_template: mdi:air-conditioner
+    min_temp: 16
+    max_temp: 30
+    precision: 1.0
+    temp_step: 1.0
+    modes:
+      - "off"
+      - "auto"
+      - "cool"
+      - "heat"
+      - "dry"
+      - "fan_only"
+    fan_modes:
+      - "auto"
+      - "low"
+      - "medium"
+      - "high"
+    current_temperature_template: "{{ state_attr('climate.living_room_ac_mqtt', 'current_temperature') }}"
+    current_humidity_template: "{{ states('sensor.living_room_ac_current_humidity') }}"
+    target_temperature_template: "{{ state_attr('climate.living_room_ac_mqtt', 'temperature') }}"
+    hvac_mode_template: "{{ states('climate.living_room_ac_mqtt') }}"
+    fan_mode_template: "{{ state_attr('climate.living_room_ac_mqtt', 'fan_mode') }}"
+    set_temperature:
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.living_room_ac_switchbot
+        data:
+          temperature: "{{ temperature }}"
+    set_hvac_mode:
+      - alias: "choose alias (name)"
+        choose:
+        - conditions:
+            condition: template
+            value_template: "{{ hvac_mode == 'off' }}"
+          sequence:
+            action: switch.turn_off
+            target:
+              entity_id: switch.living_room_ac_switchbot
+        - conditions:
+            condition: template
+            value_template: "{{ hvac_mode == 'auto' }}"
+          sequence:
+            action: climate.set_hvac_mode
+            target:
+              entity_id: climate.living_room_ac_switchbot
+            data:
+              hvac_mode: "heat_cool"
+        default:
+            action: climate.set_hvac_mode
+            target:
+              entity_id: climate.living_room_ac_switchbot
+            data:
+              hvac_mode: "{{ hvac_mode }}"
+    set_fan_mode:
+      - action: climate.set_fan_mode
+        target:
+          entity_id: climate.living_room_ac_mqtt
+        data:
+          fan_mode: "{{ fan_mode }}"
+
 mqtt:
+  - sensor:
+      - name: リビング エアコン/Current Humidity
+        object_id: living_room_ac_current_humidity
+        unique_id: fe48ce9c-eaf2-4834-9cc1-138b8fd940ff
+        device_class: humidity
+        state_topic: !secret mqtt_state_topic_living_room_ac
+        value_template: "{{ value_json.humidity }}"
+
   - climate:
       name: リビング エアコン/MQTT
       object_id: living_room_ac_mqtt
@@ -11,8 +83,8 @@ mqtt:
       temperature_unit: C
       current_temperature_topic: !secret mqtt_state_topic_living_room_ac
       current_temperature_template: "{{ value_json.roomTemperature }}"
-      current_humidity_topic: !secret mqtt_state_topic_living_room_ac
-      current_humidity_template: "{{ value_json.humidity }}"
+      # current_humidity_topic: !secret mqtt_state_topic_living_room_ac
+      # current_humidity_template: "{{ value_json.humidity }}"
       temperature_state_topic: !secret mqtt_state_topic_living_room_ac
       temperature_state_template: "{{ value_json.targetTemperature }}"
       temperature_command_topic: !secret mqtt_command_topic_living_room_ac
@@ -81,3 +153,8 @@ mqtt:
         {% elif value_json.airFlowLevel == 6 %}
           high
         {% endif %}
+
+homeassistant:
+  customize:
+    climate.living_room_ac:
+      friendly_name: リビング エアコン
