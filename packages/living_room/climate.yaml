@@ -1,0 +1,83 @@
+mqtt:
+  - climate:
+      name: リビング エアコン/MQTT
+      object_id: living_room_ac_mqtt
+      unique_id: cfee187a-8d35-41aa-be21-c470941fa5c3
+      icon: mdi:air-conditioner
+      min_temp: 16
+      max_temp: 30
+      precision: 1.0
+      temp_step: 1.0
+      temperature_unit: C
+      current_temperature_topic: !secret mqtt_state_topic_living_room_ac
+      current_temperature_template: "{{ value_json.roomTemperature }}"
+      current_humidity_topic: !secret mqtt_state_topic_living_room_ac
+      current_humidity_template: "{{ value_json.humidity }}"
+      temperature_state_topic: !secret mqtt_state_topic_living_room_ac
+      temperature_state_template: "{{ value_json.targetTemperature }}"
+      temperature_command_topic: !secret mqtt_command_topic_living_room_ac
+      temperature_command_template: '{ "targetTemperature": {{ value }} }'
+      modes:
+        - "off"
+        - "auto"
+        - "cool"
+        - "heat"
+        - "dry"
+        - "fan_only"
+      fan_modes:
+        - "auto"
+        - "low"
+        - "medium"
+        - "high"
+      mode_command_topic: !secret mqtt_command_topic_living_room_ac
+      mode_command_template: >-
+        {% if value == 'off' %}
+          { "operationStatus": "false" }
+        {% elif value == 'auto' %}
+          { "operationStatus": "true", "operationMode": "auto" }
+        {% elif value == 'cool' %}
+          { "operationStatus": "true", "operationMode": "cooling" }
+        {% elif value == 'heat' %}
+          { "operationStatus": "true", "operationMode": "heating" }
+        {% elif value == 'dry' %}
+          { "operationStatus": "true", "operationMode": "dehumidification" }
+        {% elif value == 'fan_only' %}
+          { "operationStatus": "true", "operationMode": "circulation" }
+        {% endif %}
+      mode_state_topic: !secret mqtt_state_topic_living_room_ac
+      mode_state_template: >-
+        {% if value_json.operationStatus == 'false' %}
+          off
+        {% elif value_json.operationMode == 'auto' %}
+          auto
+        {% elif value_json.operationMode == 'cooling' %}
+          cool
+        {% elif value_json.operationMode == 'heating' %}
+          heat
+        {% elif value_json.operationMode == 'dehumidification' %}
+          dry
+        {% elif value_json.operationMode == 'circulation' %}
+          fan_only
+        {% endif %}
+      fan_mode_command_topic: !secret mqtt_command_topic_living_room_ac
+      fan_mode_command_template: >-
+        {% if value == 'auto' %}
+          { "airFlowLevel": "auto" }
+        {% elif value == 'low' %}
+          { "airFlowLevel": 2 }
+        {% elif value == 'medium' %}
+          { "airFlowLevel": 4 }
+        {% elif value == 'high' %}
+          { "airFlowLevel": 6 }
+        {% endif %}
+      fan_mode_state_topic: !secret mqtt_state_topic_living_room_ac
+      fan_mode_state_template: >-
+        {% if value_json.airFlowLevel == 'auto' %}
+          auto
+        {% elif value_json.airFlowLevel == 2 %}
+          low
+        {% elif value_json.airFlowLevel == 4 %}
+          medium
+        {% elif value_json.airFlowLevel == 6 %}
+          high
+        {% endif %}
