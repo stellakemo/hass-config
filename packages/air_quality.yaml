@@ -1,0 +1,19 @@
+iaquk:
+  living_room:
+    sources:
+      temperature: sensor.living_room_thermometer_temperature
+      humidity: sensor.living_room_thermometer_humidity
+      co2: sensor.m5stack_airq_53f958_co2
+      voc_index: sensor.m5stack_airq_53f958_voc
+      pm:
+        - sensor.m5stack_airq_53f958_pm_1
+        - sensor.m5stack_airq_53f958_pm_2_5
+        - sensor.m5stack_airq_53f958_pm_4
+        - sensor.m5stack_airq_53f958_pm_10
+
+homeassistant:
+  customize:
+    sensor.living_room_iaq_index:
+      friendly_name: リビング 空気質指数
+    sensor.living_room_iaq_level:
+      friendly_name: リビング 空気質レベル
