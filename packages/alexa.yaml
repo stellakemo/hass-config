@@ -6,9 +6,13 @@ alexa:
     client_secret: !secret alexa_client_secret
     filter:
       include_entities:
+        - light.living_room_ceiling_light
         - sensor.living_room_thermometer_temperature
         - sensor.bedroom1_thermometer_temperature
     entity_config:
+      light.living_room_ceiling_light:
+        name: リビングのシーリングライト
+        description: リビングのシーリングライト
       sensor.living_room_thermometer_temperature:
         name: リビングの温度
         description: リビングの温度
