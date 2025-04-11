@@ -69,6 +69,7 @@ mqtt:
         unique_id: fe48ce9c-eaf2-4834-9cc1-138b8fd940ff
         device_class: humidity
         state_topic: !secret mqtt_state_topic_living_room_ac
+        unit_of_measurement: "%"
         value_template: "{{ value_json.humidity }}"
 
   - climate:
